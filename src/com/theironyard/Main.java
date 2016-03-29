@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Main {
+    static boolean hasEnd = false;
 
     static final int SIZE = 10;
 
@@ -80,8 +81,13 @@ public class Main {
 
     static boolean createMaze(ArrayList<ArrayList<Room>> rooms, Room room) {
         room.wasVisited = true;
+
         Room nextRoom = randomNeighbors(rooms, room.row, room.col);
         if (nextRoom == null) {
+            if (!hasEnd) {
+                room.isEnd = true;
+                hasEnd = true;
+            }
             return false;
         }
 
@@ -94,6 +100,7 @@ public class Main {
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Room>> rooms = createRooms();
+        rooms.get(0).get(0).isStart = true;
         createMaze(rooms, rooms.get(0).get(0));
         for (ArrayList<Room> row : rooms) {
             System.out.print(" _");
@@ -102,7 +109,13 @@ public class Main {
         for (ArrayList<Room> row : rooms) {
             System.out.print("|");
             for (Room room : row) {
-                if (room.hasBottom) {
+                if (room.isStart) {
+                    System.out.print("o");
+                }
+                else if (room.isEnd) {
+                    System.out.print("x");
+                }
+                else if (room.hasBottom) {
                     System.out.print("_");
                 }
                 else {
